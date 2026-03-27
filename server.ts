@@ -1,67 +1,48 @@
 import express from 'express';
 import http from 'http';
-import { Server } from 'socket.io';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import path from 'path';
-import { createServer as createViteServer } from 'vite';
 import { errorHandler } from './src/middlewares/errorHandler';
 import healthRoutes from './src/routes/health.routes';
+import authRoutes from './src/routes/auth.routes';
+import requestRoutes from './src/routes/request.routes';
+import bidRoutes from './src/routes/bid.routes';
+import paymentRoutes from './src/routes/payment.routes';
+import { initializeSocket } from './src/socket/socketManager';
 
 async function startServer() {
   const app = express();
   const server = http.createServer(app);
   const PORT = 3000;
 
-  // Socket.io
-  const io = new Server(server, {
-    cors: {
-      origin: '*',
-      methods: ['GET', 'POST'],
-    },
-  });
+  // Inicializar Socket.io
+  const io = initializeSocket(server);
 
-  // Middlewares básicos
+  // Middlewares
   app.use(helmet({ contentSecurityPolicy: false }));
   app.use(cors());
   app.use(morgan('dev'));
   app.use(express.json());
 
-  // 🔥 RUTAS API (ANTES DE VITE)
+  // API Routes
   app.use('/health', healthRoutes);
+  app.use('/auth', authRoutes);
+  app.use('/requests', requestRoutes);
+  app.use('/bids', bidRoutes);
+  app.use('/payments', paymentRoutes);
 
-  // 🔥 VITE SOLO DESPUÉS DE API
-  if (process.env.NODE_ENV !== 'production') {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa',
-    });
+  // Ruta básica para probar
+  app.get('/', (req, res) => {
+    res.json({ message: 'LogiBid API is running' });
+  });
 
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
-  }
-
-  // Error handler al final
+  // Error handler
   app.use(errorHandler);
 
   server.listen(PORT, () => {
     console.log(`🚀 LogiBid Server running on http://localhost:${PORT}`);
-  });
-
-  // Socket logs
-  io.on('connection', (socket) => {
-    console.log('New client connected:', socket.id);
-
-    socket.on('disconnect', () => {
-      console.log('Client disconnected:', socket.id);
-    });
+    console.log(`🔌 Socket.io ready for real-time events`);
   });
 }
 
