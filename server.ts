@@ -4,18 +4,18 @@ import http from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { errorHandler } from './src/middlewares/errorHandler';
-import healthRoutes from './src/routes/health.routes';
-import authRoutes from './src/routes/auth.routes';
-import requestRoutes from './src/routes/request.routes';
-import bidRoutes from './src/routes/bid.routes';
-import paymentRoutes from './src/routes/payment.routes';
-import { initializeSocket } from './src/socket/socketManager';
+import { errorHandler } from './src/middlewares/errorHandler.js';
+import healthRoutes from './src/routes/health.routes.js';
+import authRoutes from './src/routes/auth.routes.js';
+import requestRoutes from './src/routes/request.routes.js';
+import bidRoutes from './src/routes/bid.routes.js';
+import paymentRoutes from './src/routes/payment.routes.js';
+import { initializeSocket } from './src/socket/socketManager.js';
 
 async function startServer() {
   const app = express();
   const server = http.createServer(app);
-  const PORT = 3000;
+  const PORT = process.env.PORT || 3000;
 
   // Inicializar Socket.io
   const io = initializeSocket(server);
