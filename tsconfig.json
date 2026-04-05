@@ -11,6 +11,6 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "server.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["server.ts", "src/config/**/*", "src/controllers/**/*", "src/middlewares/**/*", "src/repositories/**/*", "src/routes/**/*", "src/services/**/*", "src/socket/**/*"],
+  "exclude": ["node_modules", "dist", "src/App.tsx", "src/main.tsx", "src/index.css", "src/assets", "src/hooks", "src/pages", "src/components"]
 }
