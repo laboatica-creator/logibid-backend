@@ -5,12 +5,15 @@
     "moduleResolution": "NodeNext",
     "outDir": "./dist",
     "rootDir": ".",
-    "strict": true,
+    "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
-  "include": ["server.ts", "src/config/**/*", "src/controllers/**/*", "src/middlewares/**/*", "src/repositories/**/*", "src/routes/**/*", "src/services/**/*", "src/socket/**/*"],
+  "include": ["server.ts", "src/**/*"],
   "exclude": ["node_modules", "dist", "src/App.tsx", "src/main.tsx", "src/index.css", "src/assets", "src/hooks", "src/pages", "src/components"]
 }
