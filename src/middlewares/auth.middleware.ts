@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { UserRepository } from '../repositories/user.repository';
+import { UserRepository } from '../repositories/user.repository.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'logibid_super_secret_123';
 const userRepository = new UserRepository();

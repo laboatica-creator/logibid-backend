@@ -1,4 +1,4 @@
-import { RequestRepository } from '../repositories/request.repository';
+import { RequestRepository } from '../repositories/request.repository.js';
 
 const requestRepository = new RequestRepository();
 

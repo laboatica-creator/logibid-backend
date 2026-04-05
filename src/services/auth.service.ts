@@ -1,6 +1,6 @@
+import { UserRepository } from '../repositories/user.repository.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { UserRepository } from '../repositories/user.repository';
 
 const userRepository = new UserRepository();
 
@@ -8,16 +8,13 @@ export class AuthService {
   async register(userData: any) {
     const { name, email, phone, password, role } = userData;
 
-    // Verificar si el usuario ya existe
     const existingUser = await userRepository.findByEmail(email);
     if (existingUser) {
       throw new Error('User already exists');
     }
 
-    // Hashear password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Crear usuario
     const user = await userRepository.create({
       name,
       email,
@@ -26,10 +23,8 @@ export class AuthService {
       role
     });
 
-    // Generar token
     const token = this.generateToken(user.id);
 
-    // Remover password_hash del objeto user
     const { password_hash, ...userWithoutPassword } = user;
 
     return { user: userWithoutPassword, token };

@@ -1,4 +1,4 @@
-import { BidRepository } from '../repositories/bid.repository';
+import { BidRepository } from '../repositories/bid.repository.js';
 
 const bidRepository = new BidRepository();
 

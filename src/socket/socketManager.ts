@@ -1,6 +1,6 @@
 import { Server as SocketServer, Socket } from 'socket.io';
 import { Server as HttpServer } from 'http';
-import { socketAuth } from '../middlewares/auth.middleware';
+import { socketAuth } from '../middlewares/auth.middleware.js';
 
 let io: SocketServer;
 
@@ -12,25 +12,21 @@ export const initializeSocket = (server: HttpServer) => {
     },
   });
 
-  // Middleware de autenticación para Socket.io
   io.use(socketAuth);
 
   io.on('connection', (socket: Socket) => {
-    console.log(`Socket connected: ${socket.id} - User: ${socket.userId}`);
+    console.log(`Socket connected: ${socket.id} - User: ${(socket as any).userId}`);
 
-    // Unirse a sala personal
-    socket.join(`user-${socket.userId}`);
+    socket.join(`user-${(socket as any).userId}`);
 
-    // Si es transportista, unirse a sala de requests
-    if (socket.userRole === 'driver') {
+    if ((socket as any).userRole === 'driver') {
       socket.join('requests');
-      console.log(`Driver ${socket.userId} joined requests room`);
+      console.log(`Driver ${(socket as any).userId} joined requests room`);
     }
 
-    // Evento para unirse a sala específica
     socket.on('join-room', (room: string) => {
       socket.join(room);
-      console.log(`User ${socket.userId} joined room: ${room}`);
+      console.log(`User ${(socket as any).userId} joined room: ${room}`);
     });
 
     socket.on('disconnect', () => {
@@ -48,7 +44,6 @@ export const getIO = () => {
   return io;
 };
 
-// Emisores de eventos
 export const emitNewRequest = (request: any) => {
   const ioInstance = getIO();
   ioInstance.to('requests').emit('new-request', { request });

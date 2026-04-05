@@ -1,4 +1,4 @@
-import { pool } from '../config/db';
+import { pool } from '../config/db.js';
 
 export class RequestRepository {
   async create(data: any) {
