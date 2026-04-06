@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { RequestService } from '../services/request.service';
-import { emitNewRequest } from '../socket/socketManager';
+import { RequestService } from '../services/request.service.js';
+import { emitNewRequest } from '../socket/socketManager.js';
 
 const requestService = new RequestService();
 
@@ -8,12 +8,9 @@ export const createRequest = async (req: Request, res: Response, next: NextFunct
   try {
     const request = await requestService.createRequest({
       ...req.body,
-      client_id: req.userId
+      client_id: (req as any).userId
     });
-    
-    // Emitir evento en tiempo real para transportistas
     emitNewRequest(request);
-    
     res.status(201).json(request);
   } catch (error) {
     next(error);
