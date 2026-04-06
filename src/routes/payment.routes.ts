@@ -1,15 +1,11 @@
 import { Router } from 'express';
-import { holdPayment, releasePayment, refundPayment, getPaymentsByRequest, getUserPayments } from '../controllers/payment.controller';
-import { protect } from '../middlewares/auth.middleware';
+import { protect } from '../middlewares/auth.middleware.js';
+import { holdPayment, releasePayment, refundPayment, getPaymentsByRequest, getPaymentsByUser } from '../controllers/payment.controller.js';
 
 const router = Router();
-
-router.use(protect);
-
-router.post('/hold', holdPayment);
-router.post('/release', releasePayment);
-router.post('/refund', refundPayment);
-router.get('/request/:requestId', getPaymentsByRequest);
-router.get('/user', getUserPayments);
-
+router.post('/hold', protect, holdPayment);
+router.post('/release', protect, releasePayment);
+router.post('/refund', protect, refundPayment);
+router.get('/request/:requestId', protect, getPaymentsByRequest);
+router.get('/user', protect, getPaymentsByUser);
 export default router;

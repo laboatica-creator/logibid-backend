@@ -1,77 +1,49 @@
 import { Request, Response, NextFunction } from 'express';
-import { PaymentService } from '../services/payment.service';
+import { PaymentService } from '../services/payment.service.js';
 
 const paymentService = new PaymentService();
 
-// Retener pago
-export const holdPayment = async (req: any, res: Response, next: NextFunction) => {
+export const holdPayment = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const clientId = req.userId;
-    const payment = await paymentService.holdPayment(clientId, req.body);
-    res.status(201).json({
-      status: 'success',
-      data: { payment }
-    });
-  } catch (error: any) {
-    res.status(400).json({ status: 'fail', message: error.message });
+    const payment = await paymentService.holdPayment(req.body);
+    res.status(201).json(payment);
+  } catch (error) {
+    next(error);
   }
 };
 
-// Liberar pago
-export const releasePayment = async (req: any, res: Response, next: NextFunction) => {
+export const releasePayment = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = req.userId;
-    const { paymentId } = req.body;
-    const payment = await paymentService.releasePayment(userId, paymentId);
-    res.status(200).json({
-      status: 'success',
-      message: 'Pago liberado al transportista',
-      data: { payment }
-    });
-  } catch (error: any) {
-    res.status(400).json({ status: 'fail', message: error.message });
+    const payment = await paymentService.releasePayment(req.body.paymentId, (req as any).userId);
+    res.status(200).json(payment);
+  } catch (error) {
+    next(error);
   }
 };
 
-// Reembolsar pago
-export const refundPayment = async (req: any, res: Response, next: NextFunction) => {
+export const refundPayment = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = req.userId;
-    const { paymentId } = req.body;
-    const payment = await paymentService.refundPayment(userId, paymentId);
-    res.status(200).json({
-      status: 'success',
-      message: 'Pago reembolsado al cliente',
-      data: { payment }
-    });
-  } catch (error: any) {
-    res.status(400).json({ status: 'fail', message: error.message });
+    const payment = await paymentService.refundPayment(req.body.paymentId, (req as any).userId);
+    res.status(200).json(payment);
+  } catch (error) {
+    next(error);
   }
 };
 
-// Obtener pagos por solicitud
 export const getPaymentsByRequest = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const payments = await paymentService.getPaymentsByRequest(req.params.requestId);
-    res.status(200).json({
-      status: 'success',
-      data: { payments }
-    });
-  } catch (error: any) {
-    res.status(400).json({ status: 'fail', message: error.message });
+    res.status(200).json(payments);
+  } catch (error) {
+    next(error);
   }
 };
 
-// Obtener pagos del usuario
-export const getUserPayments = async (req: any, res: Response, next: NextFunction) => {
+export const getPaymentsByUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = req.userId;
-    const payments = await paymentService.getUserPayments(userId);
-    res.status(200).json({
-      status: 'success',
-      data: { payments }
-    });
-  } catch (error: any) {
-    res.status(400).json({ status: 'fail', message: error.message });
+    const payments = await paymentService.getPaymentsByUser((req as any).userId);
+    res.status(200).json(payments);
+  } catch (error) {
+    next(error);
   }
 };

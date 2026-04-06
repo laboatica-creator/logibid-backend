@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../services/auth.service.js';
 
 const authService = new AuthService();
 
@@ -23,7 +23,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
 export const getMe = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await authService.getUserById(req.userId);
+    const user = await authService.getUserById((req as any).userId);
     res.status(200).json({ user });
   } catch (error) {
     next(error);
