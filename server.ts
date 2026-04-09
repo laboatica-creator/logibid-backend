@@ -10,6 +10,7 @@ import authRoutes from './src/routes/auth.routes.js';
 import requestRoutes from './src/routes/request.routes.js';
 import bidRoutes from './src/routes/bid.routes.js';
 import paymentRoutes from './src/routes/payment.routes.js';
+import adminRoutes from './src/routes/admin.routes.js';
 import { initializeSocket } from './src/socket/socketManager.js';
 
 async function startServer() {
@@ -32,6 +33,7 @@ async function startServer() {
   app.use('/requests', requestRoutes);
   app.use('/bids', bidRoutes);
   app.use('/payments', paymentRoutes);
+  app.use('/admin', adminRoutes);
 
   // Ruta básica para probar
   app.get('/', (req, res) => {

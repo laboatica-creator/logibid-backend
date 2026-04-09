@@ -54,3 +54,10 @@ export const socketAuth = async (socket: any, next: (err?: Error) => void) => {
     next(new Error('Authentication error: Invalid token'));
   }
 };
+
+export const adminOnly = (req: Request, res: Response, next: NextFunction) => {
+  if ((req as any).userRole !== 'admin') {
+    return res.status(403).json({ error: 'Access denied. Admin only.' });
+  }
+  next();
+};
