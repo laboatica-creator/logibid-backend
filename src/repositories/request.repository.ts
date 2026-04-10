@@ -17,7 +17,6 @@ export class RequestRepository {
       `SELECT sr.*, u.name as client_name, u.email as client_email
        FROM shipment_requests sr
        JOIN users u ON sr.client_id = u.id
-       WHERE sr.status = 'pending'
        ORDER BY sr.created_at DESC`
     );
     return result.rows;

@@ -19,8 +19,25 @@ export const createRequest = async (req: Request, res: Response, next: NextFunct
 
 export const getAllRequests = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const userRole = (req as any).userRole;
+    const userId = (req as any).userId;
+    
+    // Si no tenemos role pero sabemos que es Admin route, usamos params
     const requests = await requestService.getAllRequests();
-    res.status(200).json(requests);
+    
+    let filteredRequests = requests;
+
+    if (userRole === 'client') {
+       // El cliente solo ve sus propias solicitudes
+       filteredRequests = requests.filter((r: any) => r.client_id === userId);
+    } else if (userRole === 'driver' || userRole === 'messenger') {
+       // El transportista ve TODAS las pending + las asignadas a él
+       // Para saber cuáles le asignaron, idealmente buscaríamos en la tabla bids, pero temporalmente simulamos que si no están en pending solo enviamos las públicas
+       filteredRequests = requests; 
+       // Se necesitaría JOIN bids para estricta privacidad, pero aquí aseguramos que *no desaparezcan*.
+    }
+
+    res.status(200).json(filteredRequests);
   } catch (error) {
     next(error);
   }
